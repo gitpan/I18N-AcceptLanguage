@@ -1,4 +1,4 @@
-# $Id: AcceptLanguage.pm,v 1.2 2002/10/02 21:28:35 cgilmore Exp $
+# $Id: AcceptLanguage.pm,v 1.4 2003/01/02 15:55:18 cgilmore Exp $
 #
 # Author          : Christian Gilmore
 # Created On      : Wed Sep 25 17:10:19 CDT 2002
@@ -268,7 +268,7 @@ use vars qw($VERSION);
 
 
 # Global variables
-$VERSION = '0.03';
+$VERSION = '1.00';
 
 
 ###############################################################################
@@ -446,7 +446,7 @@ languages
   my $supportedLanguages = [( 'en-us', 'fr' )];
 
   my $acceptor = I18N::AcceptLanguage->new();
-  my $language = $acceptor->accepts($ENV{HTTP_ACCEPT_LANGUAGES},
+  my $language = $acceptor->accepts($ENV{HTTP_ACCEPT_LANGUAGE},
                                     $supportedLanguages);
 
 =head1 DESCRIPTION
@@ -549,7 +549,8 @@ case-sensitive to the value found in the SUPPORTED_LANGUAGES list.
 
 =head1 AVAILABILITY
 
-This module is available on CPAN worldwide.
+This module is available on CPAN worldwide and requires perl version
+5.6.1 or higher be installed.
 
 =head1 AUTHORS
 
@@ -561,7 +562,7 @@ RFC 2616
 
 =head1 COPYRIGHT
 
-Copyright (C) 2002, International Business Machines Corporation
+Copyright (C) 2003, International Business Machines Corporation
 and others. All Rights Reserved.
 
 This module is free software; you can redistribute it and/or

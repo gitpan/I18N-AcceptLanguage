@@ -1,4 +1,4 @@
-# $Id: 01simple.t,v 1.1 2002/09/26 22:23:33 cgilmore Exp $
+# $Id: 01simple.t,v 1.2 2002/11/14 16:57:01 cgilmore Exp $
 
 use Test::More qw(no_plan);
 
