@@ -1,3 +1,16 @@
+2004-02-11	Christian Gilmore <cag@us.ibm.com>
+
+	o Now return defaultLanguage from accepts method when input is
+	  insufficient. Change suggested by Morbus Iff
+	  <morbus@disobey.com>.
+	o Made release 1.02.
+
+2003-11-19	Christian Gilmore <cag@us.ibm.com>
+
+	o Corrected typo in documented. Reported by Florian
+	  Helmberger <fh@laudatio.com>.
+	o Made release 1.01.
+
 2003-01-01	Christian Gilmore <cag@us.ibm.com>
 
 	o Corrected typo in documentation. Reported by Gordon Rowell

@@ -1,4 +1,4 @@
-# $Id: 01simple.t,v 1.2 2002/11/14 16:57:01 cgilmore Exp $
+# $Id: 01simple.t,v 1.3 2004/02/11 20:50:10 cgilmore Exp $
 
 use Test::More qw(no_plan);
 
@@ -27,10 +27,14 @@ ok( $t2->accepts('en-us', [( 'en' )]) eq 'en' );
 ok( $t2->accepts('en', [( 'en-us' )]) eq 'en-us' );
 ok( $t2->accepts('en-gb', [( 'en-us' )]) eq 'ja' );
 ok( $t2->accepts('ja', [( 'en' )]) eq 'ja' );
+ok( $t2->accepts('', [( 'en' )]) eq 'ja' );
+ok( $t2->accepts('', [ ]) eq 'ja' );
 
 ###############################################################################
-# Basic tests with default language 
+# Basic tests without default language 
 ###############################################################################
 
 my $t3 = I18N::AcceptLanguage->new(strict => 0);
 ok( $t3->accepts('en-gb', [( 'en-us' )]) eq 'en-us' );
+ok( $t3->accepts('', [( 'en' )]) eq '' );
+ok( $t3->accepts('', [ ]) eq '' );

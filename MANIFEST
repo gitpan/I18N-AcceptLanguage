@@ -7,3 +7,4 @@ t/01simple.t
 t/02quality.t
 t/03wildcard.t
 t/04case.t
+META.yml                                 Module meta-data (added by MakeMaker)

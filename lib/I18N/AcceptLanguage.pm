@@ -1,4 +1,4 @@
-# $Id: AcceptLanguage.pm,v 1.4 2003/01/02 15:55:18 cgilmore Exp $
+# $Id: AcceptLanguage.pm,v 1.7 2004/02/11 20:51:02 cgilmore Exp $
 #
 # Author          : Christian Gilmore
 # Created On      : Wed Sep 25 17:10:19 CDT 2002
@@ -268,7 +268,7 @@ use vars qw($VERSION);
 
 
 # Global variables
-$VERSION = '1.00';
+$VERSION = '1.02';
 
 
 ###############################################################################
@@ -336,7 +336,7 @@ sub accepts {
 
   # Basic sanity check
   if (not $clientPreferences or ref($supportedLanguages) ne 'ARRAY') {
-    return;
+    return $acceptor->defaultLanguage();
   }
 
   # There should be no whitespace anways, but a cleanliness/sanity check
@@ -462,7 +462,8 @@ Header Field Definitions - Accept-Language.
 =item accepts( CLIENT_PREFERENCES, SUPPORTED_LANGUAGES )
 
 Returns the highest priority common language between client and
-server. If no common language is found, an empty string is
+server. If no common language is found, the defaultLanguage is
+returned. If defaultLanuage is also not set, an empty string is
 returned. The method expects two arguments:
 
 =over 2
@@ -505,7 +506,7 @@ of defaultLanguage defaults to an empty string.
 =item strict
 
 A boolean set to either 0 or 1. When set to 1, the software strictly
-conforms to the protocol specification. When set to 0, the sotware
+conforms to the protocol specification. When set to 0, the software
 will perform a secondary, aggressive language match regardless of
 country (ie, a client asking for only en-gb will get back en-us if the
 server does not accept en-gb or en but does accept en-us). The value
@@ -562,7 +563,7 @@ RFC 2616
 
 =head1 COPYRIGHT
 
-Copyright (C) 2003, International Business Machines Corporation
+Copyright (C) 2003, 2004 International Business Machines Corporation
 and others. All Rights Reserved.
 
 This module is free software; you can redistribute it and/or
