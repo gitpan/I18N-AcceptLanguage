@@ -268,7 +268,7 @@ use vars qw($VERSION);
 
 
 # Global variables
-$VERSION = '0.02';
+$VERSION = '0.03';
 
 
 ###############################################################################
@@ -284,6 +284,7 @@ sub new {
 
   $obj->debug($arg{debug} || 0);
   $obj->defaultLanguage($arg{defaultLanguage} || '');
+  defined $arg{strict} ? $obj->strict($arg{strict}) : $obj->strict(1);
 
   return $obj;
 }
@@ -314,6 +315,18 @@ sub defaultLanguage {
 
 ###############################################################################
 ###############################################################################
+# strict: get/set method for strict protocol conformance
+###############################################################################
+###############################################################################
+sub strict {
+  my $acceptor = shift;
+
+  $acceptor->{strict} = shift if @_;
+  return $acceptor->{strict};
+}
+
+###############################################################################
+###############################################################################
 # accepts: determines what the highest priority commonly known language
 #   between client and server is.
 ###############################################################################
@@ -339,17 +352,23 @@ sub accepts {
     next if $quality <= 0;
     # We want to force the wildcard to be last
     $quality = 0 if ($language eq '*');
-    push(@languages, { quality => $quality, language => $language });
+    # Pushing lowercase language here saves processing later
+    push(@languages, { quality => $quality,
+		       language => $language,
+		       lclanguage => lc($language) });
   }
 
   # Prepare the list of server-supported languages
   my %supportedLanguages = ();
+  my %secondaryLanguages = ();
   foreach my $language (@$supportedLanguages) {
-    print "Added language $language to supported hash\n" if $acceptor->debug();
-    $supportedLanguages{$language} = $language;
+    print "Added language $language (lower-cased) to supported hash\n"
+      if $acceptor->debug();
+    $supportedLanguages{lc($language)} = $language;
     if ($language =~ /^([^-]+)-/) {
-      print "Added language $1 to supported hash\n" if $acceptor->debug();
-      $supportedLanguages{$1} = $language;
+      print "Added language $1 (lower-cased) to secondary hash\n"
+	if $acceptor->debug();
+      $secondaryLanguages{lc($1)} = $language;
     }
   }
 
@@ -358,25 +377,50 @@ sub accepts {
 
   my $secondaryMatch = '';
   foreach my $tag (@languages) {
-    print "Matching ", $tag->{language}, "\n" if $acceptor->debug();
-    if (exists($supportedLanguages{$tag->{language}})) {
-      return $supportedLanguages{$tag->{language}};
-    } elsif ($tag->{language} =~ /^([^-]+)-/ &&
+    print "Matching ", $tag->{lclanguage}, "\n" if $acceptor->debug();
+    if (exists($supportedLanguages{$tag->{lclanguage}})) {
+      # Client en-us eq server en-us
+      print "Returning language ", $supportedLanguages{$tag->{language}}, "\n"
+	if $acceptor->debug();
+      return $supportedLanguages{$tag->{language}}
+	if exists($supportedLanguages{$tag->{language}});
+      return $supportedLanguages{$tag->{lclanguage}};
+    } elsif (exists($secondaryLanguages{$tag->{lclanguage}})) {
+      # Client en eq server en-us
+      print "Returning language ", $secondaryLanguages{$tag->{language}}, "\n"
+	if $acceptor->debug();
+      return $secondaryLanguages{$tag->{language}}
+	if exists($secondaryLanguages{$tag->{language}});
+      return $supportedLanguages{$tag->{lclanguage}};
+    } elsif (!($acceptor->strict()) &&
+	     $tag->{lclanguage} =~ /^([^-]+)-/ &&
+	     exists($secondaryLanguages{$1})) {
+      # Client en-gb eq server en-us
+      print "Setting supported secondaryMatch of $1 for ", $tag->{lclanguage}, "\n"
+	if $acceptor->debug();
+      $secondaryMatch = $secondaryLanguages{$1};
+    } elsif ($tag->{lclanguage} =~ /^([^-]+)-/ &&
 	     exists($supportedLanguages{$1})) {
+      # Client en-us eq server en
+      print "Setting secondary secondaryMatch of $1 for ", $tag->{lclanguage}, "\n"
+	if $acceptor->debug();
       $secondaryMatch = $supportedLanguages{$1};
-    } elsif ($tag->{language} eq '*') {
+    } elsif ($tag->{lclanguage} eq '*') {
       # * matches every language not already specified.
       # It doesn't care which we pick, so let's pick the default,
       # if available, then the first in the array.
+      print "Setting default for *\n" if $acceptor->debug();
       return $acceptor->defaultLanguage() if $acceptor->defaultLanguage();
       return $supportedLanguages->[0];
     }
   }
 
   # No primary matches. Secondary? (ie, en-us requested and en supported)
+  print "Testing for secondaryMatch\n" if $acceptor->debug();
   return $secondaryMatch if $secondaryMatch;
 
   # No matches. Let's return the default, if set.
+  print "Returning default, if any\n" if $acceptor->debug();
   return $acceptor->defaultLanguage();
 }
 
@@ -458,6 +502,15 @@ printed to STDOUT. The value of debug defaults to 0.
 A string representing the server's default language choice. The value
 of defaultLanguage defaults to an empty string.
 
+=item strict
+
+A boolean set to either 0 or 1. When set to 1, the software strictly
+conforms to the protocol specification. When set to 0, the sotware
+will perform a secondary, aggressive language match regardless of
+country (ie, a client asking for only en-gb will get back en-us if the
+server does not accept en-gb or en but does accept en-us). The value
+of strict defaults to 1.
+
 =back
 
 =back
@@ -475,6 +528,22 @@ method argument.
 
 A get/set method that returns the value of defaultLanguage, set by the
 optional method argument.
+
+=item strict( [ BOOLEAN ] )
+
+A get/set method that returns the value of strict, set by the optional
+method argument.
+
+=back
+
+=head1 NOTES
+
+=over 2
+
+=item Case Sensitivity
+
+Language matches are done in a case-insensitive manner but results are
+case-sensitive to the value found in the SUPPORTED_LANGUAGES list.
 
 =back
 

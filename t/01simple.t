@@ -14,7 +14,7 @@ my $t1 = I18N::AcceptLanguage->new();
 ok( $t1->accepts('en', [( 'en' )]) eq 'en' );
 ok( $t1->accepts('en-us', [( 'en' )]) eq 'en' );
 ok( $t1->accepts('en', [( 'en-us' )]) eq 'en-us' );
-ok( $t1->accepts('en-gb', [( 'en-us' )]) eq 'en-us' );
+ok( $t1->accepts('en-gb', [( 'en-us' )]) eq '' );
 ok( $t1->accepts('ja', [( 'en' )]) eq '' );
 
 ###############################################################################
@@ -25,6 +25,12 @@ my $t2 = I18N::AcceptLanguage->new(defaultLanguage => 'ja');
 ok( $t2->accepts('en', [( 'en' )]) eq 'en' );
 ok( $t2->accepts('en-us', [( 'en' )]) eq 'en' );
 ok( $t2->accepts('en', [( 'en-us' )]) eq 'en-us' );
-ok( $t2->accepts('en-gb', [( 'en-us' )]) eq 'en-us' );
+ok( $t2->accepts('en-gb', [( 'en-us' )]) eq 'ja' );
 ok( $t2->accepts('ja', [( 'en' )]) eq 'ja' );
 
+###############################################################################
+# Basic tests with default language 
+###############################################################################
+
+my $t3 = I18N::AcceptLanguage->new(strict => 0);
+ok( $t3->accepts('en-gb', [( 'en-us' )]) eq 'en-us' );
