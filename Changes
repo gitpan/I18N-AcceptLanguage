@@ -1,0 +1,8 @@
+2002-10-02	Christian Gilmore <cag@us.ibm.com>
+
+	o Reduced perl version required to 5.6.1.
+	o Made release 0.02.
+
+2002-09-26	Christian Gilmore <cag@us.ibm.com>
+
+	o Made first public release 0.01.

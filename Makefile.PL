@@ -5,8 +5,8 @@ I18N::AcceptLanguage matches language preference to available
 languages.
 EOT
 
-if ($] < 5.008) {
-  die "Perl version 5.8 or higher required.\n";
+if ($] < 5.006001) {
+  die "Perl version 5.6.1 or higher required.\n";
 }
 
 WriteMakefile(

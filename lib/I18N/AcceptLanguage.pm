@@ -1,4 +1,4 @@
-# $Id: AcceptLanguage.pm,v 1.1 2002/09/26 22:23:32 cgilmore Exp $
+# $Id: AcceptLanguage.pm,v 1.2 2002/10/02 21:28:35 cgilmore Exp $
 #
 # Author          : Christian Gilmore
 # Created On      : Wed Sep 25 17:10:19 CDT 2002
@@ -261,14 +261,14 @@ package I18N::AcceptLanguage;
 
 
 # Required packages
-use 5.008;
+use 5.006001;
 use strict;
 use warnings;
 use vars qw($VERSION);
 
 
 # Global variables
-$VERSION = '0.01';
+$VERSION = '0.02';
 
 
 ###############################################################################
