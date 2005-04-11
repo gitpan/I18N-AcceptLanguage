@@ -1,4 +1,4 @@
-# $Id: AcceptLanguage.pm,v 1.7 2004/02/11 20:51:02 cgilmore Exp $
+# $Id: AcceptLanguage.pm,v 1.8 2004/05/14 21:40:03 cgilmore Exp $
 #
 # Author          : Christian Gilmore
 # Created On      : Wed Sep 25 17:10:19 CDT 2002
@@ -268,7 +268,7 @@ use vars qw($VERSION);
 
 
 # Global variables
-$VERSION = '1.02';
+$VERSION = '1.04';
 
 
 ###############################################################################
@@ -365,7 +365,7 @@ sub accepts {
     print "Added language $language (lower-cased) to supported hash\n"
       if $acceptor->debug();
     $supportedLanguages{lc($language)} = $language;
-    if ($language =~ /^([^-]+)-/) {
+    if ($language =~ /^([^-]+)-?/) {
       print "Added language $1 (lower-cased) to secondary hash\n"
 	if $acceptor->debug();
       $secondaryLanguages{lc($1)} = $language;
@@ -394,13 +394,15 @@ sub accepts {
       return $supportedLanguages{$tag->{lclanguage}};
     } elsif (!($acceptor->strict()) &&
 	     $tag->{lclanguage} =~ /^([^-]+)-/ &&
-	     exists($secondaryLanguages{$1})) {
+	     exists($secondaryLanguages{$1}) &&
+	     $secondaryMatch eq '') {
       # Client en-gb eq server en-us
       print "Setting supported secondaryMatch of $1 for ", $tag->{lclanguage}, "\n"
 	if $acceptor->debug();
       $secondaryMatch = $secondaryLanguages{$1};
     } elsif ($tag->{lclanguage} =~ /^([^-]+)-/ &&
-	     exists($supportedLanguages{$1})) {
+	     exists($secondaryLanguages{$1}) &&
+	     $secondaryMatch eq '') {
       # Client en-us eq server en
       print "Setting secondary secondaryMatch of $1 for ", $tag->{lclanguage}, "\n"
 	if $acceptor->debug();
@@ -509,8 +511,9 @@ A boolean set to either 0 or 1. When set to 1, the software strictly
 conforms to the protocol specification. When set to 0, the software
 will perform a secondary, aggressive language match regardless of
 country (ie, a client asking for only en-gb will get back en-us if the
-server does not accept en-gb or en but does accept en-us). The value
-of strict defaults to 1.
+server does not accept en-gb or en but does accept en-us). The last
+matching language in the supported languages list will be chosen. The
+value of strict defaults to 1.
 
 =back
 

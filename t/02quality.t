@@ -16,3 +16,4 @@ ok( $t1->accepts('en-us;q=0.2, ja;q=0.9', [( 'en-us', 'ja' )]) eq 'ja' );
 ok( $t1->accepts('en-gb;q=1,en;q=0.2', [( 'en-us', 'en-gb' )]) eq 'en-gb' );
 ok( $t1->accepts('en-gb;q=1,en;q=0.2', [( 'en-us', 'en' )]) eq 'en' );
 ok( $t1->accepts('en-gb;q=1,en;q=0.9,ja;q=0.8', [( 'en-us', 'ja' )]) eq 'en-us' );
+ok( $t1->accepts('da,en-gb;q=0.8,fr-ch;q=0.7', [( 'en', 'de', 'fr', 'it' )]) eq 'en' );

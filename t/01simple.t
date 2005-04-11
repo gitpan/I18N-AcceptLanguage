@@ -16,6 +16,7 @@ ok( $t1->accepts('en-us', [( 'en' )]) eq 'en' );
 ok( $t1->accepts('en', [( 'en-us' )]) eq 'en-us' );
 ok( $t1->accepts('en-gb', [( 'en-us' )]) eq '' );
 ok( $t1->accepts('ja', [( 'en' )]) eq '' );
+ok( $t1->accepts('da,en-gb,fr-ch', [( 'en', 'de', 'fr', 'it' )]) eq 'en' );
 
 ###############################################################################
 # Basic tests with default language 
